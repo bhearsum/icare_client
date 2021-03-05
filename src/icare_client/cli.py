@@ -1,5 +1,6 @@
 import os
 
+import arrow
 import click
 import requests
 
@@ -40,7 +41,7 @@ def layouts(ctx):
 @cli.command()
 @click.pass_context
 @click.option("--child-id", required=True, type=int, default=lambda: os.environ.get("ICARE_CHILD_ID", None))
-@click.option("--date", type=str)
+@click.option("--date", type=str, default="today")
 @click.option("--limit", type=int)
 @click.option("--output-format", type=click.Choice(["text", "html"]), default=lambda: os.environ.get("ICARE_OUTPUT_FORMAT", "text"))
 @click.argument("section", nargs=-1)
@@ -62,8 +63,11 @@ def download(ctx, child_id, date, limit, output_format, section):
             }
             if date:
                 date_field = LAYOUT_DATE_FIELDS[layout]
+                date_string = date
+                if date_string == "today":
+                    date_string = arrow.now().format("MM/DD/YYYY")
                 if date_field:
-                    params["query"][0][date_field] = date
+                    params["query"][0][date_field] = date_string
             if limit:
                 params["limit"] = limit
             r = session.post(url, json=params)
