@@ -4,22 +4,9 @@ import click
 import requests
 
 from .api import LAYOUT_DATE_FIELDS, login
+from .data import LAYOUT_ALIASES, extract_data
+from .output import html_output, text_output
 
-
-# maps friendly names that humans can use on the cli
-# to entries in LAYOUT_DATE_FIELDS
-LAYOUT_ALIASES: Dict[str, str] = {
-    "diaper": "childDiaperMobile",
-    "food": "childMealItemMobile",
-    "illness": "childIllnessBasicMobile",
-    "incidents": "childIncidentBasicMobile",
-    "pictures": "childImageContainerMobile",
-    # I don't know why childEatingMobile has daily routine
-    # stuff in it, but it appears to.
-    "schedule": "childEatingMobile",
-    "sendmore": "childItemRequestMobile",
-    "sleep": "childSleepMobile",
-}
 
 @click.group()
 @click.option("--server", required=True, type=str)
@@ -64,7 +51,6 @@ def download(ctx, child_id, date, limit, output_format, section):
 
     with requests.session() as session:
         for s in section:
-            print(f"Section: {s}")
             layout = LAYOUT_ALIASES[s]
             token = login(session, server, username, password)
             session.headers["Authorization"] = f"Bearer {token}"
@@ -82,10 +68,10 @@ def download(ctx, child_id, date, limit, output_format, section):
                 params["limit"] = limit
             r = session.post(url, json=params)
             if r.json()["messages"][0]["code"] == "0":
+                extracted_data = extract_data(r.json(), s)
                 if output_format == "text":
-                    import pprint
-                    pprint.pprint(r.json())
+                    text_output(extracted_data, s)
                 else:
-                    print("and here's where i'd output html")
+                    html_output(extracted_data, s)
             else:
                 print("Got error when downloading records")
