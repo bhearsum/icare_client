@@ -55,8 +55,9 @@ def layouts(ctx):
 @click.option("--child-id", required=True, type=int)
 @click.option("--date", type=str)
 @click.option("--limit", type=int)
+@click.option("--output-format", type=click.Choice(["text", "html"]), default="text")
 @click.argument("section", nargs=-1)
-def download(ctx, child_id, date, limit, section):
+def download(ctx, child_id, date, limit, output_format, section):
     server = ctx.obj["server"]
     username = ctx.obj["username"]
     password = ctx.obj["password"]
@@ -81,7 +82,10 @@ def download(ctx, child_id, date, limit, section):
                 params["limit"] = limit
             r = session.post(url, json=params)
             if r.json()["messages"][0]["code"] == "0":
-                import pprint
-                pprint.pprint(r.json())
+                if output_format == "text":
+                    import pprint
+                    pprint.pprint(r.json())
+                else:
+                    print("and here's where i'd output html")
             else:
                 print("Got error when downloading records")
