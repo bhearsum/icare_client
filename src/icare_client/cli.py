@@ -1,4 +1,4 @@
-from typing import Dict
+import os
 
 import click
 import requests
@@ -9,9 +9,9 @@ from .output import html_output, text_output
 
 
 @click.group()
-@click.option("--server", required=True, type=str)
-@click.option("--username", required=True, type=str)
-@click.option("--password", required=True, type=str)
+@click.option("--server", required=True, type=str, default=lambda: os.environ.get("ICARE_SERVER", None))
+@click.option("--username", required=True, type=str, default=lambda: os.environ.get("ICARE_USERNAME", None))
+@click.option("--password", required=True, type=str, default=lambda: os.environ.get("ICARE_PASSWORD", None))
 @click.pass_context
 def cli(ctx, server, username, password):
     ctx.ensure_object(dict)
@@ -39,10 +39,10 @@ def layouts(ctx):
 
 @cli.command()
 @click.pass_context
-@click.option("--child-id", required=True, type=int)
+@click.option("--child-id", required=True, type=int, default=lambda: os.environ.get("ICARE_CHILD_ID", None))
 @click.option("--date", type=str)
 @click.option("--limit", type=int)
-@click.option("--output-format", type=click.Choice(["text", "html"]), default="text")
+@click.option("--output-format", type=click.Choice(["text", "html"]), default=lambda: os.environ.get("ICARE_OUTPUT_FORMAT", "text"))
 @click.argument("section", nargs=-1)
 def download(ctx, child_id, date, limit, output_format, section):
     server = ctx.obj["server"]
