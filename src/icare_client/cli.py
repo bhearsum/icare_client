@@ -1,8 +1,25 @@
+from typing import Dict
+
 import click
 import requests
 
 from .api import LAYOUT_DATE_FIELDS, login
 
+
+# maps friendly names that humans can use on the cli
+# to entries in LAYOUT_DATE_FIELDS
+LAYOUT_ALIASES: Dict[str, str] = {
+    "diaper": "childDiaperMobile",
+    "food": "childMealItemMobile",
+    "illness": "childIllnessBasicMobile",
+    "incidents": "childIncidentBasicMobile",
+    "pictures": "childImageContainerMobile",
+    # I don't know why childEatingMobile has daily routine
+    # stuff in it, but it appears to.
+    "schedule": "childEatingMobile",
+    "sendmore": "childItemRequestMobile",
+    "sleep": "childSleepMobile",
+}
 
 @click.group()
 @click.option("--server", required=True, type=str)
@@ -38,25 +55,26 @@ def layouts(ctx):
 @click.option("--child-id", required=True, type=int)
 @click.option("--date", type=str)
 @click.option("--limit", type=int)
-@click.argument("layout", nargs=-1)
-def download(ctx, child_id, date, limit, layout):
+@click.argument("section", nargs=-1)
+def download(ctx, child_id, date, limit, section):
     server = ctx.obj["server"]
     username = ctx.obj["username"]
     password = ctx.obj["password"]
 
     with requests.session() as session:
-        for l in layout:
-            print(f"Layout: {l}")
+        for s in section:
+            print(f"Section: {s}")
+            layout = LAYOUT_ALIASES[s]
             token = login(session, server, username, password)
             session.headers["Authorization"] = f"Bearer {token}"
-            url = f"{server}/fmi/data/vLatest/databases/iCareMobileAccess/layouts/{l}/_find"
+            url = f"{server}/fmi/data/vLatest/databases/iCareMobileAccess/layouts/{layout}/_find"
             params = {
                 "query": [{
                     "child::childId": child_id,
                 }],
             }
             if date:
-                date_field = LAYOUT_DATE_FIELDS[l]
+                date_field = LAYOUT_DATE_FIELDS[layout]
                 if date_field:
                     params["query"][0][date_field] = date
             if limit:

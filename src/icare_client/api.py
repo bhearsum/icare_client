@@ -5,6 +5,7 @@ from requests.auth import HTTPBasicAuth
 
 
 LAYOUT_DATE_FIELDS: Dict[str, str] = {
+    # this field seems to have daily activities (but not food in it?)
     "childDiaperMobile": "dateChanged",
     "childEatingMobile": "effectiveDate",
     "childIllnessBasicMobile": "???",
@@ -17,6 +18,7 @@ LAYOUT_DATE_FIELDS: Dict[str, str] = {
     "childMealItemMobile": "effectiveDate",
     "childSleepMobile": "sleepDate",
 }
+
 
 def login(session: requests.session, server: str, username: str, password: str) -> str:
     url = f"{server}/fmi/data/vLatest/databases/iCareMobileAccess/sessions"
