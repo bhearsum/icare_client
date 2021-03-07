@@ -42,23 +42,22 @@ def section_key(section: str) -> Callable:
     return get_key
 
 
-def text_output(data: dict, section: str) -> None:
-    print(f"{section.capitalize()} Information:")
-    fmt = SECTION_FORMATS.get(section)
-    if fmt:
-        for d in sorted(data, key=section_key(section)):
-            print(fmt.format(**d))
-    else:
-        pprint.pprint(data)
+def text_output(section_data: Dict[str, dict]) -> None:
+    for section, data in section_data.items():
+        print(f"{section.capitalize()} Information:")
+        fmt = SECTION_FORMATS.get(section)
+        if fmt:
+            for d in sorted(data, key=section_key(section)):
+                print(fmt.format(**d))
+        else:
+            pprint.pprint(data)
 
     print()
 
 
-def html_output(data: dict, section: str) -> None:
-    # TODO: need to be able to handle multiple sections
-    # maybe the caller should handle header/footer
+def html_output(section_data: Dict[str, dict]) -> None:
     env = Environment(
         loader=PackageLoader("icare_client", "templates"),
         autoescape=select_autoescape(["html"])
     )
-    print(env.get_template("report.html").render(childName="Kieran", date="2020-02-02", diapers=data))
+    print(env.get_template("report.html").render(childName="Kieran", date="2020-02-02", **section_data))

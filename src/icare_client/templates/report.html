@@ -1,10 +1,10 @@
 <html>
 <head><title>{{ childName }}'s Report for {{ date }}</title></head>
 <body>
-    {% if diapers | length > 0 %}
+    {% if diaper | length > 0 %}
     <h1>Diapers</h1>
     {% endif %}
-    {% for d in diapers %}
+    {% for d in diaper %}
     <h2>{{ d["when"] }}</h2>
     <span>{{ d["type"] }}{{ ", " + d["cream"] if d["cream"] }}</span>
     {% endfor %}
