@@ -1,7 +1,7 @@
 import pprint
 from typing import Callable, Dict, List, Union
 
-import arrow
+from jinja2 import Environment, PackageLoader, select_autoescape
 
 
 SECTION_FORMATS: Dict[str, str] = {
@@ -57,17 +57,8 @@ def text_output(data: dict, section: str) -> None:
 def html_output(data: dict, section: str) -> None:
     # TODO: need to be able to handle multiple sections
     # maybe the caller should handle header/footer
-    print("""
-<html>
-<head><title>iCare Information</title></head>
-<body>""")
-    if section == "diaper":
-        print("<h1>Diapers</h1>")
-        for d in data:
-            print(f"""
-<h2>{d["when"]}</h2>
-<span>{d["type"]}{", " + d["cream"] if d["cream"] else ""}</span>""")
-
-    print("""
-</body>
-</html>""")
+    env = Environment(
+        loader=PackageLoader("icare_client", "templates"),
+        autoescape=select_autoescape(["html"])
+    )
+    print(env.get_template("report.html").render(childName="Kieran", date="2020-02-02", diapers=data))
