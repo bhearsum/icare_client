@@ -1,5 +1,5 @@
 import pprint
-from typing import Callable, Dict, List, Union
+from typing import Any, Callable, Dict, List, Optional, Union
 
 from jinja2 import Environment, PackageLoader, select_autoescape
 
@@ -16,7 +16,9 @@ SECTION_FORMATS: Dict[str, str] = {
 * Comments: {comments}""",
 }
 
-SECTION_SORTS: Dict[str, Union[str, List[str]]] = {
+SectionData = Union[str, Dict[str, Union[str, List[str]]]]
+
+SECTION_SORTS: Dict[str, SectionData] = {
     "diaper": "when",
     "food": {
         "key": "meal",
@@ -28,7 +30,7 @@ SECTION_SORTS: Dict[str, Union[str, List[str]]] = {
 def section_key(section: str) -> Callable:
     sortBy = SECTION_SORTS.get(section)
 
-    def get_key(item: dict) -> str:
+    def get_key(item: dict) -> Optional[Any]:
         if isinstance(sortBy, str):
             return item.get(sortBy)
         elif isinstance(sortBy, dict):
@@ -39,19 +41,19 @@ def section_key(section: str) -> Callable:
     return get_key
 
 
-def text_output(section_data: Dict[str, dict]) -> None:
+def text_output(section_data: Dict[str, SectionData]) -> None:
     for section, data in section_data.items():
         print(f"{section.capitalize()} Information:")
         fmt = SECTION_FORMATS.get(section)
         if fmt:
             for d in sorted(data, key=section_key(section)):
-                print(fmt.format(**d))
+                print(fmt.format(**d))  # type: ignore
         else:
             pprint.pprint(data)
 
     print()
 
 
-def html_output(section_data: Dict[str, dict]) -> None:
+def html_output(section_data: Dict[str, SectionData]) -> None:
     env = Environment(loader=PackageLoader("icare_client", "templates"), autoescape=select_autoescape(["html"]))
     print(env.get_template("report.html").render(childName="Kieran", date="2020-02-02", **section_data))

@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, List, Union
 
 # maps friendly names that humans can use on the cli
 # to entries in LAYOUT_DATE_FIELDS
@@ -44,13 +44,15 @@ RELEVANT_SECTION_FIELDS: Dict[str, Dict[str, list]] = {
     },
 }
 
+iCareData = Dict[str, Union[str, None]]
 
-def extract_data(data: dict, section: str) -> dict:
-    extracted = []
+
+def extract_data(data: dict, section: str) -> List[iCareData]:
+    extracted: List[iCareData] = []
     fields = RELEVANT_SECTION_FIELDS.get(section)
     if fields:
         for d in [i["fieldData"] for i in data["response"]["data"]]:
-            transformed = {}
+            transformed: iCareData = {}
             for our_field, their_fields in fields.items():
                 their_data = [str(d[f]) for f in their_fields]
                 if any(their_data):

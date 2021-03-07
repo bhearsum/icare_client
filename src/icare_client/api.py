@@ -1,9 +1,9 @@
-from typing import Dict
+from typing import Dict, Union
 
 import requests
 from requests.auth import HTTPBasicAuth
 
-LAYOUT_DATE_FIELDS: Dict[str, str] = {
+LAYOUT_DATE_FIELDS: Dict[str, Union[str, None]] = {
     # this field seems to have daily activities (but not food in it?)
     "childDiaperMobile": "dateChanged",
     "childEatingMobile": "effectiveDate",
@@ -19,7 +19,7 @@ LAYOUT_DATE_FIELDS: Dict[str, str] = {
 }
 
 
-def login(session: requests.session, server: str, username: str, password: str) -> str:
+def login(session: requests.Session, server: str, username: str, password: str) -> str:
     url = f"{server}/fmi/data/vLatest/databases/iCareMobileAccess/sessions"
     r = session.post(url, auth=HTTPBasicAuth(username, password), json={})
     r.raise_for_status()

@@ -10,7 +10,7 @@ setup(
     author="Ben Hearsum",
     author_email="ben@hearsum.ca",
     include_package_data=True,
-    install_requires=["click", "jinja2", "requests"],
+    install_requires=["arrow", "click", "jinja2", "requests"],
     packages=find_packages("src"),
     package_dir={"": "src"},
     py_modules=[splitext(basename(path))[0] for path in glob("src/*.py")],
