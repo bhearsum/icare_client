@@ -45,6 +45,11 @@ RELEVANT_SECTION_FIELDS: Dict[str, Dict[str, list]] = {
     },
 }
 
+SECTION_SORTS: Dict[str, str] = {
+    "diaper": "timestampChanged",
+    "food": "foo",
+}
+
 
 def extract_data(data: dict, section: str) -> dict:
     extracted = []
