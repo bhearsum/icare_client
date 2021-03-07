@@ -20,7 +20,7 @@ SECTION_FORMATS: Dict[str, str] = {
 }
 
 SECTION_SORTS: Dict[str, Union[str, List[str]]] = {
-    "diaper": "timestampChanged",
+    "diaper": "when",
     "food": {
         "key": "meal",
         "order": ["Breakfast", "Lunch", "Snack 1", "Snack 2"],
@@ -55,4 +55,19 @@ def text_output(data: dict, section: str) -> None:
 
 
 def html_output(data: dict, section: str) -> None:
-    print("outputting html")
+    # TODO: need to be able to handle multiple sections
+    # maybe the caller should handle header/footer
+    print("""
+<html>
+<head><title>iCare Information</title></head>
+<body>""")
+    if section == "diaper":
+        print("<h1>Diapers</h1>")
+        for d in data:
+            print(f"""
+<h2>{d["when"]}</h2>
+<span>{d["type"]}{", " + d["cream"] if d["cream"] else ""}</span>""")
+
+    print("""
+</body>
+</html>""")

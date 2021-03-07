@@ -45,11 +45,6 @@ RELEVANT_SECTION_FIELDS: Dict[str, Dict[str, list]] = {
     },
 }
 
-SECTION_SORTS: Dict[str, str] = {
-    "diaper": "timestampChanged",
-    "food": "foo",
-}
-
 
 def extract_data(data: dict, section: str) -> dict:
     extracted = []
@@ -59,7 +54,10 @@ def extract_data(data: dict, section: str) -> dict:
             transformed = {}
             for our_field, their_fields in fields.items():
                 their_data = [str(d[f]) for f in their_fields]
-                transformed[our_field] = " ".join(their_data)
+                if any(their_data):
+                    transformed[our_field] = " ".join(their_data)
+                else:
+                    transformed[our_field] = None
 
             extracted.append(transformed)
     else:
