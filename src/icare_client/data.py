@@ -1,6 +1,5 @@
 from typing import Dict
 
-
 # maps friendly names that humans can use on the cli
 # to entries in LAYOUT_DATE_FIELDS
 LAYOUT_ALIASES: Dict[str, str] = {

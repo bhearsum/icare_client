@@ -34,7 +34,7 @@ def layouts(ctx):
         url = f"{server}/fmi/data/vLatest/databases/iCareMobileAccess/layouts"
         r = session.get(url)
         r.raise_for_status()
-        layout_names = [l["name"] for l in r.json()["response"]["layouts"][0]["folderLayoutNames"]]
+        layout_names = [layout["name"] for layout in r.json()["response"]["layouts"][0]["folderLayoutNames"]]
         print("\n".join(layout_names))
 
 
@@ -43,7 +43,11 @@ def layouts(ctx):
 @click.option("--child-id", required=True, type=int, default=lambda: os.environ.get("ICARE_CHILD_ID", None))
 @click.option("--date", type=str, default="today")
 @click.option("--limit", type=int)
-@click.option("--output-format", type=click.Choice(["text", "html"]), default=lambda: os.environ.get("ICARE_OUTPUT_FORMAT", "text"))
+@click.option(
+    "--output-format",
+    type=click.Choice(["text", "html"]),
+    default=lambda: os.environ.get("ICARE_OUTPUT_FORMAT", "text"),
+)
 @click.argument("section", nargs=-1)
 def report(ctx, child_id, date, limit, output_format, section):
     server = ctx.obj["server"]
@@ -58,9 +62,11 @@ def report(ctx, child_id, date, limit, output_format, section):
             session.headers["Authorization"] = f"Bearer {token}"
             url = f"{server}/fmi/data/vLatest/databases/iCareMobileAccess/layouts/{layout}/_find"
             params = {
-                "query": [{
-                    "child::childId": child_id,
-                }],
+                "query": [
+                    {
+                        "child::childId": child_id,
+                    }
+                ],
             }
             if date:
                 date_field = LAYOUT_DATE_FIELDS[layout]

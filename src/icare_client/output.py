@@ -3,16 +3,13 @@ from typing import Callable, Dict, List, Union
 
 from jinja2 import Environment, PackageLoader, select_autoescape
 
-
 SECTION_FORMATS: Dict[str, str] = {
     "diaper": "* {when}: {type}",
-
     "food": """{meal}: {menu}
 * {amount}
 * Milk: {milkAmount} {milkUnits}
 * Water: {waterAmount} {waterUnits}
 """,
-
     # TODO: Improve time formatting (arrow.humanize for length, probably)
     "sleep": """* Duration: {length}
 * Woke Up At: {wakeTime}
@@ -56,8 +53,5 @@ def text_output(section_data: Dict[str, dict]) -> None:
 
 
 def html_output(section_data: Dict[str, dict]) -> None:
-    env = Environment(
-        loader=PackageLoader("icare_client", "templates"),
-        autoescape=select_autoescape(["html"])
-    )
+    env = Environment(loader=PackageLoader("icare_client", "templates"), autoescape=select_autoescape(["html"]))
     print(env.get_template("report.html").render(childName="Kieran", date="2020-02-02", **section_data))

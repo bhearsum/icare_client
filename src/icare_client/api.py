@@ -3,7 +3,6 @@ from typing import Dict
 import requests
 from requests.auth import HTTPBasicAuth
 
-
 LAYOUT_DATE_FIELDS: Dict[str, str] = {
     # this field seems to have daily activities (but not food in it?)
     "childDiaperMobile": "dateChanged",
