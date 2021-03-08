@@ -10,7 +10,6 @@ SECTION_FORMATS: Dict[str, str] = {
 * Milk: {milkAmount} {milkUnits}
 * Water: {waterAmount} {waterUnits}
 """,
-    # TODO: Improve time formatting (arrow.humanize for length, probably)
     "sleep": """* Duration: {length}
 * Woke Up At: {wakeTime}
 * Comments: {comments}""",
@@ -54,6 +53,7 @@ def text_output(section_data: Dict[str, SectionData]) -> None:
     print()
 
 
-def html_output(section_data: Dict[str, SectionData]) -> None:
+def html_output(section_data: Dict[str, SectionData], child_name: str, date: str) -> None:
     env = Environment(loader=PackageLoader("icare_client", "templates"), autoescape=select_autoescape(["html"]))
-    print(env.get_template("report.html").render(childName="Kieran", date="2020-02-02", **section_data))
+    sorted_section_data = {k: sorted(v, key=section_key(k)) for k, v in section_data.items()}
+    print(env.get_template("report.html").render(child_name=child_name, date=date, **sorted_section_data))

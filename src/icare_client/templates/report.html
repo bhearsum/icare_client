@@ -1,5 +1,5 @@
 <html>
-<head><title>{{ childName }}'s Report for {{ date }}</title></head>
+<head><title>{{ child_name }}'s Report for {{ date }}</title></head>
 <body>
     {% if diaper | length > 0 %}
     <h1>Diapers</h1>
@@ -7,6 +7,31 @@
     {% for d in diaper %}
     <h2>{{ d["when"] }}</h2>
     <span>{{ d["type"] }}{{ ", " + d["cream"] if d["cream"] }}</span>
+    {% endfor %}
+
+    {% if food | length > 0 %}
+    <h1>Food</h1>
+    {% endif %}
+    {% for f in food %}
+    <h2>{{ f["meal"] }}</h2>
+    <ul>
+        <li>{{ f["amount"] }}</li>
+        <li>Milk: {{ f["milkAmount"] }} {{ f["milkUnits"] }}</li>
+        <li>Water: {{ f["waterAmount"] }} {{ f["waterUnits"] }}</li>
+    </ul>
+    {% endfor %}
+
+    {% if sleep | length > 0 %}
+    <h1>Sleep</h1>
+    {% endif %}
+    {% for s in sleep %}
+    <h2>{{ s["length"] }}</h2>
+    <ul>
+        <li>Woke up at: {{ s["wakeTime"] }}</li>
+        {% if s["comments"] %}
+        <li>Comments: {{ s["comments"] }}</li>
+        {% endif %}
+    </ul>
     {% endfor %}
 </body>
 </html>

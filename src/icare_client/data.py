@@ -1,4 +1,4 @@
-from typing import Dict, List, Union
+from typing import Callable, Dict, List, Union
 
 # maps friendly names that humans can use on the cli
 # to entries in LAYOUT_DATE_FIELDS
@@ -47,6 +47,19 @@ RELEVANT_SECTION_FIELDS: Dict[str, Dict[str, list]] = {
 iCareData = Dict[str, Union[str, None]]
 
 
+def time_to_duration(time: str) -> int:
+    h, m, s = time.split(":")
+    if int(h):
+        return f"{h} hours, {m} minutes, {s} seconds"
+    else:
+        return f"{m} minutes, {s} seconds"
+
+
+FIELD_TRANSFORMATIONS: Dict[str, Callable] = {
+    "sleepDuration": time_to_duration,
+}
+
+
 def extract_data(data: dict, section: str) -> List[iCareData]:
     extracted: List[iCareData] = []
     fields = RELEVANT_SECTION_FIELDS.get(section)
@@ -54,7 +67,13 @@ def extract_data(data: dict, section: str) -> List[iCareData]:
         for d in [i["fieldData"] for i in data["response"]["data"]]:
             transformed: iCareData = {}
             for our_field, their_fields in fields.items():
-                their_data = [str(d[f]) for f in their_fields]
+                their_data = []
+                for tf in their_fields:
+                    if FIELD_TRANSFORMATIONS.get(tf):
+                        their_data.append(FIELD_TRANSFORMATIONS[tf](d[tf]))
+                    else:
+                        their_data.append(str(d[tf]))
+
                 if any(their_data):
                     transformed[our_field] = " ".join(their_data)
                 else:

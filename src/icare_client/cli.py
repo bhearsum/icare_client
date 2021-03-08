@@ -41,6 +41,7 @@ def layouts(ctx):
 @cli.command()
 @click.pass_context
 @click.option("--child-id", required=True, type=int, default=lambda: os.environ.get("ICARE_CHILD_ID", None))
+@click.option("--child-name", type=str)
 @click.option("--date", type=str, default="today")
 @click.option("--limit", type=int)
 @click.option(
@@ -49,10 +50,15 @@ def layouts(ctx):
     default=lambda: os.environ.get("ICARE_OUTPUT_FORMAT", "text"),
 )
 @click.argument("section", nargs=-1)
-def report(ctx, child_id, date, limit, output_format, section):
+def report(ctx, child_id, child_name, date, limit, output_format, section):
     server = ctx.obj["server"]
     username = ctx.obj["username"]
     password = ctx.obj["password"]
+    if not child_name:
+        child_name = str(child_id)
+
+    if date and date == "today":
+        date = arrow.now().format("MM/DD/YYYY")
 
     section_data = {}
     with requests.session() as session:
@@ -70,11 +76,8 @@ def report(ctx, child_id, date, limit, output_format, section):
             }
             if date:
                 date_field = LAYOUT_DATE_FIELDS[layout]
-                date_string = date
-                if date_string == "today":
-                    date_string = arrow.now().format("MM/DD/YYYY")
                 if date_field:
-                    params["query"][0][date_field] = date_string
+                    params["query"][0][date_field] = date
             if limit:
                 params["limit"] = limit
             r = session.post(url, json=params)
@@ -86,4 +89,4 @@ def report(ctx, child_id, date, limit, output_format, section):
     if output_format == "text":
         text_output(section_data)
     else:
-        html_output(section_data)
+        html_output(section_data, child_name=child_name, date=date)
