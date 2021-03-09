@@ -1,3 +1,4 @@
+import base64
 from typing import Callable, Dict, List, Union
 
 # maps friendly names that humans can use on the cli
@@ -37,6 +38,9 @@ RELEVANT_SECTION_FIELDS: Dict[str, Dict[str, list]] = {
         "waterAmount": ["water"],
         "waterUnits": ["waterUnits"],
     },
+    "pictures": {
+        "image": ["imageBase64"],
+    },
     "sleep": {
         "comments": ["comments"],
         "length": ["sleepDuration"],
@@ -47,16 +51,21 @@ RELEVANT_SECTION_FIELDS: Dict[str, Dict[str, list]] = {
 iCareData = Dict[str, Union[str, None]]
 
 
-def time_to_duration(time: str) -> int:
+def time_to_duration(time: str) -> str:
     h, m, s = time.split(":")
     if int(h):
-        return f"{h} hours, {m} minutes, {s} seconds"
+        return f"{int(h)} hours, {int(m)} minutes, {int(s)} seconds"
     else:
-        return f"{m} minutes, {s} seconds"
+        return f"{int(m)} minutes, {int(s)} seconds"
+
+
+def base64_to_jpg(data: str) -> bytes:
+    return base64.b64decode(data.replace("\r\n", ""))
 
 
 FIELD_TRANSFORMATIONS: Dict[str, Callable] = {
     "sleepDuration": time_to_duration,
+    "imageBase64": base64_to_jpg,
 }
 
 
@@ -74,10 +83,12 @@ def extract_data(data: dict, section: str) -> List[iCareData]:
                     else:
                         their_data.append(str(d[tf]))
 
-                if any(their_data):
-                    transformed[our_field] = " ".join(their_data)
-                else:
+                if len(their_data) == 0:
                     transformed[our_field] = None
+                elif len(their_data) == 1:
+                    transformed[our_field] = their_data[0]
+                else:
+                    transformed[our_field] = " ".join(their_data)
 
             extracted.append(transformed)
     else:
