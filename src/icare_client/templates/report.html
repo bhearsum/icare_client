@@ -1,6 +1,13 @@
 <html>
 <head><title>{{ child_name }}'s Report for {{ date }}</title></head>
 <body>
+    {% if pictures | length > 0 %}
+    <h1>Pictures!</h1>
+    {% endif %}
+    {% for p in pictures %}
+    <img src="{{ p }}">
+    {% endfor %}
+
     {% if diaper | length > 0 %}
     <h1>Diapers</h1>
     {% endif %}

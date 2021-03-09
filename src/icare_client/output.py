@@ -63,5 +63,19 @@ def html_output(section_data: Dict[str, SectionData], output_dir: str, child_nam
     env = Environment(loader=PackageLoader("icare_client", "templates"), autoescape=select_autoescape(["html"]))
     sorted_section_data = {k: sorted(v, key=section_key(k)) for k, v in section_data.items()}
 
+    picture_links = []
+    if sorted_section_data.get("pictures"):
+        for i, data in enumerate(sorted_section_data["pictures"]):
+            with open(os.path.join(output_dir, f"{i}.jpg"), "wb+") as f:
+                f.write(data["image"])
+                picture_links.append(f"{i}.jpg")
+
+        # won't be used; no point in passing it
+        del sorted_section_data["pictures"]
+
     with open(os.path.join(output_dir, "report.html"), "w+") as f:
-        f.write(env.get_template("report.html").render(child_name=child_name, date=date, **sorted_section_data))
+        f.write(
+            env.get_template("report.html").render(
+                child_name=child_name, date=date, pictures=picture_links, **sorted_section_data
+            )
+        )
