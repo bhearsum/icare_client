@@ -49,8 +49,9 @@ def layouts(ctx):
     type=click.Choice(["text", "html"]),
     default=lambda: os.environ.get("ICARE_OUTPUT_FORMAT", "text"),
 )
+@click.option("--html-dir", type=str, default=".")
 @click.argument("section", nargs=-1)
-def report(ctx, child_id, child_name, date, limit, output_format, section):
+def report(ctx, child_id, child_name, date, limit, output_format, html_dir, section):
     server = ctx.obj["server"]
     username = ctx.obj["username"]
     password = ctx.obj["password"]
@@ -89,4 +90,4 @@ def report(ctx, child_id, child_name, date, limit, output_format, section):
     if output_format == "text":
         text_output(section_data)
     else:
-        html_output(section_data, child_name=child_name, date=date)
+        html_output(section_data, output_dir=html_dir, child_name=child_name, date=date)

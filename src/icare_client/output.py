@@ -1,3 +1,5 @@
+import os
+import os.path
 import pprint
 from typing import Any, Callable, Dict, List, Optional, Union
 
@@ -53,7 +55,13 @@ def text_output(section_data: Dict[str, SectionData]) -> None:
     print()
 
 
-def html_output(section_data: Dict[str, SectionData], child_name: str, date: str) -> None:
+def html_output(section_data: Dict[str, SectionData], output_dir: str, child_name: str, date: str) -> None:
+    output_dir = os.path.abspath(os.path.expanduser(output_dir))
+    if not os.path.isdir(output_dir):
+        os.mkdir(output_dir)
+
     env = Environment(loader=PackageLoader("icare_client", "templates"), autoescape=select_autoescape(["html"]))
     sorted_section_data = {k: sorted(v, key=section_key(k)) for k, v in section_data.items()}
-    print(env.get_template("report.html").render(child_name=child_name, date=date, **sorted_section_data))
+
+    with open(os.path.join(output_dir, "report.html"), "w+") as f:
+        f.write(env.get_template("report.html").render(child_name=child_name, date=date, **sorted_section_data))
