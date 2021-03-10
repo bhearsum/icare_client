@@ -6,7 +6,7 @@
     <h2>Pictures!</h2>
     {% endif %}
     {% for p in pictures %}
-    <img src="{{ p }}">
+    <a href="{{ p }}"><img src="{{ p }}" style="max-width: 30%; height: auto"></a>
     {% endfor %}
 
     {% if diaper | length > 0 %}
