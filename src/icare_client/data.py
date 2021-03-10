@@ -85,10 +85,11 @@ def extract_data(data: dict, section: str) -> List[iCareData]:
             for our_field, their_fields in fields.items():
                 their_data = []
                 for tf in their_fields:
-                    if FIELD_TRANSFORMATIONS.get(tf):
-                        their_data.append(FIELD_TRANSFORMATIONS[tf](d[tf]))
-                    else:
-                        their_data.append(str(d[tf]))
+                    if d[tf]:
+                        if FIELD_TRANSFORMATIONS.get(tf):
+                            their_data.append(FIELD_TRANSFORMATIONS[tf](d[tf]))
+                        else:
+                            their_data.append(str(d[tf]))
 
                 if len(their_data) == 0:
                     transformed[our_field] = None
