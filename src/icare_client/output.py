@@ -56,7 +56,7 @@ def text_output(section_data: Dict[str, SectionData]) -> None:
 
 
 def html_output(section_data: Dict[str, SectionData], output_dir: str, child_name: str, date: str) -> None:
-    output_dir = os.path.abspath(os.path.expanduser(output_dir))
+    output_dir = os.path.join(os.path.abspath(os.path.expanduser(output_dir)), date.replace("/", "-"))
     if not os.path.isdir(output_dir):
         os.mkdir(output_dir)
 

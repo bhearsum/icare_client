@@ -53,7 +53,6 @@ iCareData = Dict[str, Union[str, None]]
 
 def time_to_duration(time: str) -> str:
     parts = time.split(":")
-    h, m, s = time.split(":")
     if len(parts) == 3:
         h = int(parts[0])
         m = int(parts[1])
