@@ -34,7 +34,9 @@
     {% for s in sleep %}
     <h2>{{ s["length"] }}</h2>
     <ul>
+        {% if s["wakeTime"] %}
         <li>Woke up at: {{ s["wakeTime"] }}</li>
+        {% endif %}
         {% if s["comments"] %}
         <li>Comments: {{ s["comments"] }}</li>
         {% endif %}

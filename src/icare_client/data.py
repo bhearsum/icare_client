@@ -52,11 +52,19 @@ iCareData = Dict[str, Union[str, None]]
 
 
 def time_to_duration(time: str) -> str:
+    parts = time.split(":")
     h, m, s = time.split(":")
-    if int(h):
-        return f"{int(h)} hours, {int(m)} minutes, {int(s)} seconds"
+    if len(parts) == 3:
+        h = int(parts[0])
+        m = int(parts[1])
+        s = int(parts[2])
+        if h:
+            return f"{h} hours, {m} minutes, {s} seconds"
+        else:
+            return f"{int(m)} minutes, {int(s)} seconds"
+    # This is super hacky
     else:
-        return f"{int(m)} minutes, {int(s)} seconds"
+        return "Currently Sleeping"
 
 
 def base64_to_jpg(data: str) -> bytes:
