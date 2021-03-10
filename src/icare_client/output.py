@@ -17,7 +17,9 @@ SECTION_FORMATS: Dict[str, str] = {
 * Comments: {comments}""",
 }
 
-SectionData = Union[str, Dict[str, Union[str, List[str]]]]
+# I can't figure out the proper value for the Dict keys
+# so Any will have to do for now
+SectionData = Union[str, Dict[Any, Union[str, List[str]]]]
 
 SECTION_SORTS: Dict[str, SectionData] = {
     "diaper": "when",
@@ -66,8 +68,8 @@ def html_output(section_data: Dict[str, SectionData], output_dir: str, child_nam
     picture_links = []
     if sorted_section_data.get("pictures"):
         for i, data in enumerate(sorted_section_data["pictures"]):
-            with open(os.path.join(output_dir, f"{i}.jpg"), "wb+") as f:
-                f.write(data["image"])
+            with open(os.path.join(output_dir, f"{i}.jpg"), "wb+") as fp:
+                fp.write(data["image"])
                 picture_links.append(f"{i}.jpg")
 
         # won't be used; no point in passing it
