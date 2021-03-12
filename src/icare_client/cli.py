@@ -4,7 +4,7 @@ import arrow
 import click
 import requests
 
-from .api import LAYOUT_DATE_FIELDS, login
+from .api import LAYOUT_CHILD_ID_FIELDS, LAYOUT_DATE_FIELDS, LAYOUT_ROOM_ID_FIELDS, login
 from .data import LAYOUT_ALIASES, extract_data
 from .output import html_output, text_output
 
@@ -58,30 +58,45 @@ def report(ctx, child_id, child_name, date, limit, output_format, html_dir, sect
     if not child_name:
         child_name = str(child_id)
 
-    if date and date == "today":
+    if date == "today":
         date = arrow.now().format("MM/DD/YYYY")
 
     section_data = {}
     with requests.session() as session:
+        # First grab the room id, which we'll need for various other queries
+        token = login(session, server, username, password)
+        session.headers["Authorization"] = f"Bearer {token}"
+
+        url = f"{server}/fmi/data/vLatest/databases/iCareMobileAccess/layouts/childAttendanceMobile/_find"
+        params = {"query": [{"childID": child_id, "dateIn": date}]}
+        r = session.post(url, json=params)
+        room_id = None
+        if r.json()["messages"][0]["code"] == "0":
+            room_id = r.json()["response"]["data"][0]["fieldData"]["roomID"]
+        else:
+            print("Couldn't find child's room id; cannot continue")
+
         for s in section:
-            layout = LAYOUT_ALIASES.get(s)
-            token = login(session, server, username, password)
-            session.headers["Authorization"] = f"Bearer {token}"
+            layout = LAYOUT_ALIASES.get(s, s)
             url = f"{server}/fmi/data/vLatest/databases/iCareMobileAccess/layouts/{layout}/_find"
             params = {
                 "query": [
                     {
-                        "child::childId": child_id,
+                        LAYOUT_CHILD_ID_FIELDS.get(layout, "child::childId"): child_id,
                     }
                 ],
             }
-            if date:
-                date_field = LAYOUT_DATE_FIELDS.get(layout)
-                if date_field:
-                    params["query"][0][date_field] = date
+            date_field = LAYOUT_DATE_FIELDS.get(layout)
+            room_id_field = LAYOUT_ROOM_ID_FIELDS.get(layout)
+            if date_field:
+                params["query"][0][date_field] = date
+            if room_id_field:
+                params["query"][0][room_id_field] = room_id
             if limit:
                 params["limit"] = limit
             r = session.post(url, json=params)
+            #url = f"{server}/fmi/data/vLatest/databases/iCareMobileAccess/layouts/{layout}/records"
+            #r = session.get(url)
             if r.json()["messages"][0]["code"] == "0":
                 section_data[s] = extract_data(r.json(), s)
             else:

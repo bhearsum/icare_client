@@ -4,6 +4,7 @@ import requests
 from requests.auth import HTTPBasicAuth
 
 LAYOUT_DATE_FIELDS: Dict[str, Union[str, None]] = {
+    "childAttendanceMobile": "dateIn",
     # this field seems to have daily activities (but not food in it?)
     "childDiaperMobile": "dateChanged",
     "childEatingMobile": "effectiveDate",
@@ -16,6 +17,13 @@ LAYOUT_DATE_FIELDS: Dict[str, Union[str, None]] = {
     "childItemRequestMobile": "requestDate",
     "childMealItemMobile": "effectiveDate",
     "childSleepMobile": "sleepDate",
+}
+
+LAYOUT_CHILD_ID_FIELDS: Dict[str, str] = {
+    "childAttendanceMobile": "childID",
+}
+
+LAYOUT_ROOM_ID_FIELDS: Dict[str, str] = {
 }
 
 
