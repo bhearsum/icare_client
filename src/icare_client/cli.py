@@ -64,7 +64,7 @@ def report(ctx, child_id, child_name, date, limit, output_format, html_dir, sect
     section_data = {}
     with requests.session() as session:
         for s in section:
-            layout = LAYOUT_ALIASES[s]
+            layout = LAYOUT_ALIASES.get(s)
             token = login(session, server, username, password)
             session.headers["Authorization"] = f"Bearer {token}"
             url = f"{server}/fmi/data/vLatest/databases/iCareMobileAccess/layouts/{layout}/_find"
@@ -76,7 +76,7 @@ def report(ctx, child_id, child_name, date, limit, output_format, html_dir, sect
                 ],
             }
             if date:
-                date_field = LAYOUT_DATE_FIELDS[layout]
+                date_field = LAYOUT_DATE_FIELDS.get(layout)
                 if date_field:
                     params["query"][0][date_field] = date
             if limit:
