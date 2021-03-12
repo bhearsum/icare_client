@@ -39,7 +39,7 @@ def section_key(section: str) -> Callable:
         elif isinstance(sortBy, dict):
             return sortBy["order"].index(item[sortBy["key"]])
         else:
-            return None
+            return ""
 
     return get_key
 
