@@ -40,6 +40,28 @@ def layouts(ctx):
 
 @cli.command()
 @click.pass_context
+@click.argument("section", nargs=-1)
+def records(ctx, section):
+    server = ctx.obj["server"]
+    username = ctx.obj["username"]
+    password = ctx.obj["password"]
+
+    with requests.session() as session:
+        token = login(session, server, username, password)
+        session.headers["Authorization"] = f"Bearer {token}"
+
+        for s in section:
+            layout = LAYOUT_ALIASES.get(s, s)
+            url = f"{server}/fmi/data/vLatest/databases/iCareMobileAccess/layouts/{layout}/records"
+            r = session.get(url)
+
+            import pprint
+            pprint.pprint(r.json())
+    pass
+
+
+@cli.command()
+@click.pass_context
 @click.option("--child-id", required=True, type=int, default=lambda: os.environ.get("ICARE_CHILD_ID", None))
 @click.option("--child-name", type=str)
 @click.option("--date", type=str, default="today")
@@ -95,8 +117,6 @@ def report(ctx, child_id, child_name, date, limit, output_format, html_dir, sect
             if limit:
                 params["limit"] = limit
             r = session.post(url, json=params)
-            #url = f"{server}/fmi/data/vLatest/databases/iCareMobileAccess/layouts/{layout}/records"
-            #r = session.get(url)
             if r.json()["messages"][0]["code"] == "0":
                 section_data[s] = extract_data(r.json(), s)
             else:
