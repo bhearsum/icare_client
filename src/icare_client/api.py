@@ -5,7 +5,6 @@ from requests.auth import HTTPBasicAuth
 
 LAYOUT_DATE_FIELDS: Dict[str, Union[str, None]] = {
     "childAttendanceMobile": "dateIn",
-    # this field seems to have daily activities (but not food in it?)
     "childDiaperMobile": "dateChanged",
     "childEatingMobile": "effectiveDate",
     "childIllnessBasicMobile": "???",
@@ -17,6 +16,10 @@ LAYOUT_DATE_FIELDS: Dict[str, Union[str, None]] = {
     "childItemRequestMobile": "requestDate",
     "childMealItemMobile": "effectiveDate",
     "childSleepMobile": "sleepDate",
+    # Also no way to query by date - entries are only kept for one day
+    "roomMealChangeMobile": None,
+    # daily activities are here, but not "special interests"
+    "roomProgramDailyActivityMobile": "effectiveDate",
 }
 
 LAYOUT_CHILD_ID_FIELDS: Dict[str, str] = {
@@ -24,6 +27,10 @@ LAYOUT_CHILD_ID_FIELDS: Dict[str, str] = {
 }
 
 LAYOUT_ROOM_ID_FIELDS: Dict[str, str] = {
+    # This is a long ID not the short one we get from roomProgramDailyActivityMobile
+    # We probably to translate the short id to the long somewhere else first...
+    "roomMealChangeMobile": "???",
+    "roomProgramDailyActivityMobile": "roomID",
 }
 
 
