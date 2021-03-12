@@ -33,7 +33,11 @@
     <h2>Sleep</h2>
     {% endif %}
     {% for s in sleep %}
+    {% if s["length"] %}
+    <h3>Currently sleeping</h3>
+    {% else %}
     <h3>{{ s["length"] }}</h3>
+    {% endif %}
     <ul>
         {% if s["wakeTime"] %}
         <li>Woke up at: {{ s["wakeTime"] }}</li>
