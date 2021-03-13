@@ -56,6 +56,7 @@ def records(ctx, section):
             r = session.get(url)
 
             import pprint
+
             pprint.pprint(r.json())
     pass
 
@@ -80,6 +81,7 @@ def report(ctx, child_id, child_name, date, limit, output_format, html_dir, sect
     if not child_name:
         child_name = str(child_id)
 
+    query_date = arrow.now().format("MM/DD/YYYY HH:mm:ss")
     if date == "today":
         date = arrow.now().format("MM/DD/YYYY")
 
@@ -125,4 +127,4 @@ def report(ctx, child_id, child_name, date, limit, output_format, html_dir, sect
     if output_format == "text":
         text_output(section_data)
     else:
-        html_output(section_data, output_dir=html_dir, child_name=child_name, date=date)
+        html_output(section_data, output_dir=html_dir, child_name=child_name, date=date, query_date=query_date)

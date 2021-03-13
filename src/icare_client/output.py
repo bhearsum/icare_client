@@ -57,7 +57,9 @@ def text_output(section_data: Dict[str, SectionData]) -> None:
     print()
 
 
-def html_output(section_data: Dict[str, SectionData], output_dir: str, child_name: str, date: str) -> None:
+def html_output(
+    section_data: Dict[str, SectionData], output_dir: str, child_name: str, date: str, query_date: str
+) -> None:
     output_dir = os.path.join(os.path.abspath(os.path.expanduser(output_dir)), date.replace("/", "-"))
     if not os.path.isdir(output_dir):
         os.mkdir(output_dir)
@@ -78,6 +80,6 @@ def html_output(section_data: Dict[str, SectionData], output_dir: str, child_nam
     with open(os.path.join(output_dir, "report.html"), "w+") as f:
         f.write(
             env.get_template("report.html").render(
-                child_name=child_name, date=date, pictures=picture_links, **sorted_section_data
+                child_name=child_name, date=date, query_date=query_date, pictures=picture_links, **sorted_section_data
             )
         )
