@@ -16,7 +16,7 @@ LAYOUT_ALIASES: Dict[str, str] = {
     # associate a childId with a roomId
     # It's available in sleep, but there's probably a
     # better place to get it
-    "schedule": "childEatingMobile",
+    "schedule": "roomProgramDailyActivityMobile",
     "sendmore": "childItemRequestMobile",
     "sleep": "childSleepMobile",
 }
@@ -40,6 +40,15 @@ RELEVANT_SECTION_FIELDS: Dict[str, Dict[str, list]] = {
     },
     "pictures": {
         "image": ["imageBase64"],
+    },
+    "schedule": {
+        "topic": ["roomProgram::interestTopic"],
+        "please_bring": ["roomProgram::parentsParticipate"],
+        "word_of_the_week": ["roomProgram::wordOfTheWeek"],
+        "educational_goal": ["roomProgramElectGoal::goal"],
+        "task_theme": ["programTaskArea::name"],
+        "task": ["task"],
+        # need to pull info out of portalData too
     },
     "sleep": {
         "comments": ["comments"],

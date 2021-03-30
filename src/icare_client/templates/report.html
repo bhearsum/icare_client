@@ -47,5 +47,13 @@
         {% endif %}
     </ul>
     {% endfor %}
+
+    {% if schedule | length > 0 %}
+    <h2>Programming</h2>
+    {% endif %}
+    {% for s in schedule %}
+    <h3>{{ s["task_theme"] }}</h3>
+    {{ s["task"] }}
+    {% endfor %}
 </body>
 </html>

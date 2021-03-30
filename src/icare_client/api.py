@@ -23,14 +23,8 @@ LAYOUT_DATE_FIELDS: Dict[str, Union[str, None]] = {
 }
 
 LAYOUT_CHILD_ID_FIELDS: Dict[str, str] = {
-    "childAttendanceMobile": "childID",
-}
-
-LAYOUT_ROOM_ID_FIELDS: Dict[str, str] = {
-    # This is a long ID not the short one we get from roomProgramDailyActivityMobile
-    # We probably to translate the short id to the long somewhere else first...
-    "roomMealChangeMobile": "???",
-    "roomProgramDailyActivityMobile": "roomID",
+    # this looks like it's not being filtered enough; double check this
+    "roomProgramDailyActivityMobile": "childEating::childID",
 }
 
 
