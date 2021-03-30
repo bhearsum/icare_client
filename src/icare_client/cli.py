@@ -4,7 +4,7 @@ import arrow
 import click
 import requests
 
-from .api import LAYOUT_CHILD_ID_FIELDS, LAYOUT_DATE_FIELDS, LAYOUT_ROOM_ID_FIELDS, login
+from .api import LAYOUT_CHILD_ID_FIELDS, LAYOUT_DATE_FIELDS, LAYOUT_ROOM_ID_FIELDS, get_child_id, login
 from .data import LAYOUT_ALIASES, extract_data
 from .output import html_output, text_output
 
@@ -63,8 +63,7 @@ def records(ctx, section):
 
 @cli.command()
 @click.pass_context
-@click.option("--child-id", required=True, type=int, default=lambda: os.environ.get("ICARE_CHILD_ID", None))
-@click.option("--child-name", type=str)
+@click.option("--child-name", required=True, type=str, default=lambda: os.environ.get("ICARE_CHILD_NAME", None))
 @click.option("--date", type=str, default="today")
 @click.option("--limit", type=int)
 @click.option(
@@ -74,12 +73,10 @@ def records(ctx, section):
 )
 @click.option("--html-dir", type=str, default=".")
 @click.argument("section", nargs=-1)
-def report(ctx, child_id, child_name, date, limit, output_format, html_dir, section):
+def report(ctx, child_name, date, limit, output_format, html_dir, section):
     server = ctx.obj["server"]
     username = ctx.obj["username"]
     password = ctx.obj["password"]
-    if not child_name:
-        child_name = str(child_id)
 
     query_date = arrow.now().format("MM/DD/YYYY HH:mm:ss")
     if date == "today":
@@ -91,6 +88,7 @@ def report(ctx, child_id, child_name, date, limit, output_format, html_dir, sect
         token = login(session, server, username, password)
         session.headers["Authorization"] = f"Bearer {token}"
 
+        child_id = get_child_id(session, server, username, child_name)
         url = f"{server}/fmi/data/vLatest/databases/iCareMobileAccess/layouts/childAttendanceMobile/_find"
         params = {"query": [{"childID": child_id, "dateIn": date}]}
         r = session.post(url, json=params)

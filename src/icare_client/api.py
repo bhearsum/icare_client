@@ -40,3 +40,25 @@ def login(session: requests.Session, server: str, username: str, password: str) 
     r.raise_for_status()
 
     return r.json()["response"]["token"]
+
+
+def get_child_id(session: requests.Session, server: str, username: str, child_name: str) -> int:
+    url = (
+        f"{server}/fmi/data/vLatest/databases/iCareMobileAccess/layouts/childBasicWithMobileAppUserAccountMobile/_find"
+    )
+    params = {
+        "query": [
+            {
+                "mobileAppUserAccount::accountName": username,
+            }
+        ],
+    }
+
+    r = session.post(url, json=params)
+    r.raise_for_status()
+
+    for child in r.json()["response"]["data"]:
+        if child["fieldData"]["firstName"] == child_name:
+            return int(child["fieldData"]["childID"])
+
+    raise ValueError("Couldn't find child id")
