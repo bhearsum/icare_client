@@ -1,4 +1,5 @@
 import os
+import os.path
 
 import arrow
 import click
@@ -99,6 +100,11 @@ def report(ctx, child_name, date, limit, output_format, html_dir, section):
         r = session.post(url, json=params)
 
         for s in sections:
+            # To avoid unnecessary downloading, do not process pictures if
+            # any already exist.
+            if s == "pictures" and os.path.exists(os.path.join(html_dir, "0.jpg")):
+                continue
+
             layout = LAYOUT_ALIASES.get(s, s)
             url = f"{server}/fmi/data/vLatest/databases/iCareMobileAccess/layouts/{layout}/_find"
             params = {
