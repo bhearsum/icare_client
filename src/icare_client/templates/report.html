@@ -21,19 +21,28 @@
     <h2>Food</h2>
     {% endif %}
     {% for f in food %}
-    <h3>{{ f["meal"] }}</h3>
+
+    {% if f["amount"] %}
+    <h3>{{ f["meal"] }}: {{ f["menu"] }}</h3>
     <ul>
         <li>{{ f["amount"] }}</li>
+        {% if f["milkAmount"] %}
         <li>Milk: {{ f["milkAmount"] }} {{ f["milkUnits"] }}</li>
+        {% endif %}
+
+        {% if f["waterAmount"] %}
         <li>Water: {{ f["waterAmount"] }} {{ f["waterUnits"] }}</li>
+        {% endif %}
     </ul>
+    {% endif %}
+
     {% endfor %}
 
     {% if sleep | length > 0 %}
     <h2>Sleep</h2>
     {% endif %}
     {% for s in sleep %}
-    {% if s["length"] %}
+    {% if not s["length"] %}
     <h3>Currently sleeping</h3>
     {% else %}
     <h3>{{ s["length"] }}</h3>
