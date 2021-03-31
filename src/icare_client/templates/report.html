@@ -51,9 +51,36 @@
     {% if schedule | length > 0 %}
     <h2>Programming</h2>
     {% endif %}
+
     {% for s in schedule %}
     <h3>{{ s["task_theme"] }}</h3>
     {{ s["task"] }}
     {% endfor %}
+
+    {% if schedule2 | length > 0 %}
+    {% for s in schedule2 %}
+
+    {% if s["please_bring"] %}
+    <h3>Please Participate by Bringing</h3>
+    {{ s["please_bring"] }}
+    {% endif %}
+
+    {% if s["topic"] %}
+    <h3>Topic</h3>
+    {{ s["topic"] }}
+    {% endif %}
+
+    {% if s["word_of_the_week"] %}
+    <h3>Word of the Week</h3>
+    {{ s["word_of_the_week"] }}
+    {% endif %}
+
+    {% if s["educational_goal"] %}
+    <h3>Educational Goal</h3>
+    {{ s["educational_goal"] }}
+    {% endif %}
+
+    {% endfor %}
+    {% endif %}
 </body>
 </html>

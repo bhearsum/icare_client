@@ -9,14 +9,11 @@ LAYOUT_ALIASES: Dict[str, str] = {
     "illness": "childIllnessBasicMobile",
     "incidents": "childIncidentBasicMobile",
     "pictures": "childImageContainerMobile",
-    # I don't know why childEatingMobile has daily routine
-    # stuff in it, but it appears to.
-    # Also, it returns information for multiple rooms
-    # We can't parse this correctly until we know how to
-    # associate a childId with a roomId
-    # It's available in sleep, but there's probably a
-    # better place to get it
+    # roomProgramDailyActivityMobile has some items that are unique and
+    # some that have multiple repeated entries.
+    # schedule contains the former, and schedule2 contains the latter
     "schedule": "roomProgramDailyActivityMobile",
+    "schedule2": "roomProgramDailyActivityMobile",
     "sendmore": "childItemRequestMobile",
     "sleep": "childSleepMobile",
 }
@@ -42,12 +39,14 @@ RELEVANT_SECTION_FIELDS: Dict[str, Dict[str, list]] = {
         "image": ["imageBase64"],
     },
     "schedule": {
+        "task_theme": ["programTaskArea::name"],
+        "task": ["task"],
+    },
+    "schedule2": {
         "topic": ["roomProgram::interestTopic"],
         "please_bring": ["roomProgram::parentsParticipate"],
         "word_of_the_week": ["roomProgram::wordOfTheWeek"],
         "educational_goal": ["roomProgramElectGoal::goal"],
-        "task_theme": ["programTaskArea::name"],
-        "task": ["task"],
         # need to pull info out of portalData too
     },
     "sleep": {
@@ -107,7 +106,9 @@ def extract_data(data: dict, section: str) -> List[iCareData]:
                 else:
                     transformed[our_field] = " ".join(their_data)
 
-            extracted.append(transformed)
+            # Don't add entries that are exactly the same
+            if not extracted or extracted[0] != transformed:
+                extracted.append(transformed)
     else:
         extracted.append(data)
 
