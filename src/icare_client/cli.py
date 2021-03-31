@@ -82,6 +82,11 @@ def report(ctx, child_name, date, limit, output_format, html_dir, section):
     if date == "today":
         date = arrow.now().format("MM/DD/YYYY")
 
+    if "all" in section:
+        sections = LAYOUT_ALIASES.keys()
+    else:
+        sections = section
+
     section_data = {}
     with requests.session() as session:
         # First grab the room id, which we'll need for various other queries
@@ -93,7 +98,7 @@ def report(ctx, child_name, date, limit, output_format, html_dir, section):
         params = {"query": [{"childID": child_id, "dateIn": date}]}
         r = session.post(url, json=params)
 
-        for s in section:
+        for s in sections:
             layout = LAYOUT_ALIASES.get(s, s)
             url = f"{server}/fmi/data/vLatest/databases/iCareMobileAccess/layouts/{layout}/_find"
             params = {
@@ -114,7 +119,7 @@ def report(ctx, child_name, date, limit, output_format, html_dir, section):
             if r.json()["messages"][0]["code"] == "0":
                 section_data[s] = extract_data(r.json(), s)
             else:
-                print("Got error when downloading records:")
+                print(f"Got error when downloading records for section '{s}':")
                 print(r.json())
 
     if output_format == "text":

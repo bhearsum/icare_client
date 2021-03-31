@@ -14,6 +14,7 @@ LAYOUT_ALIASES: Dict[str, str] = {
     # schedule contains the former, and schedule2 contains the latter
     "schedule": "roomProgramDailyActivityMobile",
     "schedule2": "roomProgramDailyActivityMobile",
+    "schedule3": "childEatingMobile",
     "sendmore": "childItemRequestMobile",
     "sleep": "childSleepMobile",
 }
@@ -47,7 +48,9 @@ RELEVANT_SECTION_FIELDS: Dict[str, Dict[str, list]] = {
         "please_bring": ["roomProgram::parentsParticipate"],
         "word_of_the_week": ["roomProgram::wordOfTheWeek"],
         "educational_goal": ["roomProgramElectGoal::goal"],
-        # need to pull info out of portalData too
+    },
+    "schedule3": {
+        "comments": ["comments"],
     },
     "sleep": {
         "comments": ["comments"],

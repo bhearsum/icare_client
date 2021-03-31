@@ -82,5 +82,17 @@
 
     {% endfor %}
     {% endif %}
+
+    {% if schedule3 | length > 0 %}
+    {% for s in schedule3 %}
+
+    {% if s["comments"] %}
+    <h3>Comments</h3>
+    {{ s["comments"] }}
+    {% endif %}
+
+    {% endfor %}
+    {% endif %}
+
 </body>
 </html>
