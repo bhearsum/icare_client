@@ -97,12 +97,14 @@ def report(ctx, child_name, date, limit, output_format, html_dir, section):
             layout = LAYOUT_ALIASES.get(s, s)
             url = f"{server}/fmi/data/vLatest/databases/iCareMobileAccess/layouts/{layout}/_find"
             params = {
-                "query": [
-                    {
-                        LAYOUT_CHILD_ID_FIELDS.get(layout, "child::childId"): child_id,
-                    }
-                ],
+                "query": [{}],
             }
+            if layout in LAYOUT_CHILD_ID_FIELDS:
+                for filter_ in LAYOUT_CHILD_ID_FIELDS.get(layout):
+                    params["query"][0][filter_] = child_id
+            else:
+                params["query"][0]["child::childId"] = child_id
+
             date_field = LAYOUT_DATE_FIELDS.get(layout)
             if date_field:
                 params["query"][0][date_field] = date

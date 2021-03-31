@@ -1,4 +1,4 @@
-from typing import Dict, Union
+from typing import Dict, List, Union
 
 import requests
 from requests.auth import HTTPBasicAuth
@@ -22,9 +22,8 @@ LAYOUT_DATE_FIELDS: Dict[str, Union[str, None]] = {
     "roomProgramDailyActivityMobile": "effectiveDate",
 }
 
-LAYOUT_CHILD_ID_FIELDS: Dict[str, str] = {
-    # this looks like it's not being filtered enough; double check this
-    "roomProgramDailyActivityMobile": "childEating::childID",
+LAYOUT_CHILD_ID_FIELDS: Dict[str, List[str]] = {
+    "roomProgramDailyActivityMobile": ["childEating::childID", "childAttendanceRoomProgramDailyActivity::childID"],
 }
 
 
