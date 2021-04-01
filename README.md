@@ -1,5 +1,24 @@
-# How to Use
-TODO: Talk about how to find your server name
+# Overview
+A simple tool to fetch data from [iCareLullaboo](https://lullaboo.ca/) servers. It can fetch any of the data that the official apps can, and generate (very) simple reports.
+
+This tool was written primarily because the official provided apps are slow, while this tool can be run periodically in the background.
+
+# Installation
+```
+git clone https://github.com/bhearsum/icare_lullaboo_client icare_lullaboo_client
+cd icare_lullaboo_client
+python setup.py install
+```
+
+# Usage
+The most common operation is generating a report. This can be done with the following commands:
+```
+export ICARE_USERNAME=yourusername
+export ICARE_PASSWORD=yourpassword
+icare report --output-format html --html-dir ~/childcare --date 03/26/2021 --child-name "Jadzia"
+```
+
+After it completes, ~/childcare/03-26-2021 will be populated with a `report.html` file, and any pictures that were available. Use your web browser to view it.
 
 # Analysis of iCare App Traffic
 This is an overview of information gleaned from a network capture from the official iCare app, with irrelevant things trimmed out.

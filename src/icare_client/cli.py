@@ -11,7 +11,9 @@ from .output import html_output, text_output
 
 
 @click.group()
-@click.option("--server", required=True, type=str, default=lambda: os.environ.get("ICARE_SERVER", None))
+@click.option(
+    "--server", required=True, type=str, default=lambda: os.environ.get("ICARE_SERVER", "https://lullaboo.myddns.com")
+)
 @click.option("--username", required=True, type=str, default=lambda: os.environ.get("ICARE_USERNAME", None))
 @click.option("--password", required=True, type=str, default=lambda: os.environ.get("ICARE_PASSWORD", None))
 @click.pass_context
@@ -83,7 +85,7 @@ def report(ctx, child_name, date, limit, output_format, html_dir, section):
     if date == "today":
         date = arrow.now().format("MM/DD/YYYY")
 
-    if "all" in section:
+    if not section or "all" in section:
         sections = LAYOUT_ALIASES.keys()
     else:
         sections = section
