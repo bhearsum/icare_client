@@ -85,6 +85,11 @@ def report(ctx, child_name, date, limit, output_format, html_dir, section):
     if date == "today":
         date = arrow.now().format("MM/DD/YYYY")
 
+    if html_dir:
+        html_dir = os.path.join(os.path.abspath(os.path.expanduser(html_dir)), date.replace("/", "-"))
+        if not os.path.isdir(html_dir):
+            os.mkdir(html_dir)
+
     if not section or "all" in section:
         sections = LAYOUT_ALIASES.keys()
     else:
