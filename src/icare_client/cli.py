@@ -96,6 +96,8 @@ def report(ctx, child_name, date, limit, output_format, html_dir, section):
         sections = section
 
     section_data = {}
+    picture_links = []
+
     with requests.session() as session:
         # First grab the room id, which we'll need for various other queries
         token = login(session, server, username, password)
@@ -110,6 +112,10 @@ def report(ctx, child_name, date, limit, output_format, html_dir, section):
             # To avoid unnecessary downloading, do not process pictures if
             # any already exist.
             if s == "pictures" and os.path.exists(os.path.join(html_dir, "0.jpg")):
+                for f in os.listdir(html_dir):
+                    if f.endswith(".jpg"):
+                        picture_links.append(f)
+
                 continue
 
             layout = LAYOUT_ALIASES.get(s, s)
@@ -138,4 +144,11 @@ def report(ctx, child_name, date, limit, output_format, html_dir, section):
     if output_format == "text":
         text_output(section_data)
     else:
-        html_output(section_data, output_dir=html_dir, child_name=child_name, date=date, query_date=query_date)
+        html_output(
+            section_data,
+            output_dir=html_dir,
+            child_name=child_name,
+            date=date,
+            query_date=query_date,
+            picture_links=picture_links,
+        )

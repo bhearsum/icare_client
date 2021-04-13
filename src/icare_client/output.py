@@ -58,12 +58,16 @@ def text_output(section_data: Dict[str, SectionData]) -> None:
 
 
 def html_output(
-    section_data: Dict[str, SectionData], output_dir: str, child_name: str, date: str, query_date: str
+    section_data: Dict[str, SectionData],
+    output_dir: str,
+    child_name: str,
+    date: str,
+    query_date: str,
+    picture_links: list = [],
 ) -> None:
     env = Environment(loader=PackageLoader("icare_client", "templates"), autoescape=select_autoescape(["html"]))
     sorted_section_data = {k: sorted(v, key=section_key(k)) for k, v in section_data.items()}
 
-    picture_links = []
     if sorted_section_data.get("pictures"):
         for i, data in enumerate(sorted_section_data["pictures"]):
             with open(os.path.join(output_dir, f"{i}.jpg"), "wb+") as fp:
