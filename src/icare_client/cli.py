@@ -69,6 +69,7 @@ def records(ctx, section):
 @click.option("--child-name", required=True, type=str, default=lambda: os.environ.get("ICARE_CHILD_NAME", None))
 @click.option("--date", type=str, default="today")
 @click.option("--limit", type=int)
+@click.option("--force-picture-download", type=bool, default=False)
 @click.option(
     "--output-format",
     type=click.Choice(["text", "html"]),
@@ -76,7 +77,7 @@ def records(ctx, section):
 )
 @click.option("--html-dir", type=str, default=".")
 @click.argument("section", nargs=-1)
-def report(ctx, child_name, date, limit, output_format, html_dir, section):
+def report(ctx, child_name, date, limit, force_picture_download, output_format, html_dir, section):
     server = ctx.obj["server"]
     username = ctx.obj["username"]
     password = ctx.obj["password"]
@@ -111,7 +112,7 @@ def report(ctx, child_name, date, limit, output_format, html_dir, section):
         for s in sections:
             # To avoid unnecessary downloading, do not process pictures if
             # any already exist.
-            if s == "pictures" and os.path.exists(os.path.join(html_dir, "0.jpg")):
+            if not force_picture_download and s == "pictures" and os.path.exists(os.path.join(html_dir, "0.jpg")):
                 for f in os.listdir(html_dir):
                     if f.endswith(".jpg"):
                         picture_links.append(f)
